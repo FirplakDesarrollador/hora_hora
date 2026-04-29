@@ -153,7 +153,7 @@ export default function BasicInfoStep({ onNext }: { onNext: () => void }) {
 
                         <div className="space-y-2">
                             <Label htmlFor="planta">Planta</Label>
-                            <Select value={formData.planta} onValueChange={(val) => handleSelect("planta", val)}>
+                            <Select value={formData.planta} onValueChange={(val) => val && handleSelect("planta", val)}>
                                 <SelectTrigger id="planta" className={`border-slate-300 ${!formData.planta && 'text-slate-500'}`}>
                                     <SelectValue placeholder="Seleccionar planta" />
                                 </SelectTrigger>
@@ -174,7 +174,7 @@ export default function BasicInfoStep({ onNext }: { onNext: () => void }) {
                                 placeholder="Seleccione un puesto" 
                                 required={true}
                                 defaultValue={formData.puesto}
-                                onValueChange={(val) => handleSelect("puesto", val)}
+                                onValueChange={(val) => val && handleSelect("puesto", val)}
                             />
                         </div>
 
@@ -186,7 +186,7 @@ export default function BasicInfoStep({ onNext }: { onNext: () => void }) {
                                 placeholder="Seleccione un operario" 
                                 required={true}
                                 defaultValue={formData.operario}
-                                onValueChange={(val) => handleSelect("operario", val)}
+                                onValueChange={(val) => val && handleSelect("operario", val)}
                             />
                         </div>
 
