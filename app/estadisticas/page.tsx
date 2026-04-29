@@ -233,35 +233,35 @@ export default function Estadisticas() {
                         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 grid grid-cols-2 md:grid-cols-5 gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
                             <div className="space-y-1">
                                 <Label className="text-xs text-slate-500 font-semibold">Año</Label>
-                                <Select value={filterYear} onValueChange={v => { setFilterYear(v); setFilterMonth("all"); setFilterDay("all"); }}>
+                                <Select value={filterYear} onValueChange={v => { if (v) { setFilterYear(v); setFilterMonth("all"); setFilterDay("all"); } }}>
                                     <SelectTrigger className="h-9"><SelectValue placeholder="Todos" /></SelectTrigger>
                                     <SelectContent><SelectItem value="all">Todos</SelectItem>{years.map(y => <SelectItem key={y} value={y}>{y}</SelectItem>)}</SelectContent>
                                 </Select>
                             </div>
                             <div className="space-y-1">
                                 <Label className="text-xs text-slate-500 font-semibold">Mes</Label>
-                                <Select value={filterMonth} onValueChange={v => { setFilterMonth(v); setFilterDay("all"); }} disabled={filterYear === "all"}>
+                                <Select value={filterMonth} onValueChange={v => { if (v) { setFilterMonth(v); setFilterDay("all"); } }} disabled={filterYear === "all"}>
                                     <SelectTrigger className="h-9"><SelectValue placeholder="Todos" /></SelectTrigger>
                                     <SelectContent><SelectItem value="all">Todos</SelectItem>{months.map(m => <SelectItem key={m} value={m.toString()}>{MONTHS[m]}</SelectItem>)}</SelectContent>
                                 </Select>
                             </div>
                             <div className="space-y-1">
                                 <Label className="text-xs text-slate-500 font-semibold">Día</Label>
-                                <Select value={filterDay} onValueChange={setFilterDay} disabled={filterMonth === "all"}>
+                                <Select value={filterDay} onValueChange={v => v && setFilterDay(v)} disabled={filterMonth === "all"}>
                                     <SelectTrigger className="h-9"><SelectValue placeholder="Todos" /></SelectTrigger>
                                     <SelectContent><SelectItem value="all">Todos</SelectItem>{days.map(d => <SelectItem key={d} value={d.toString()}>{d}</SelectItem>)}</SelectContent>
                                 </Select>
                             </div>
                             <div className="space-y-1">
                                 <Label className="text-xs text-slate-500 font-semibold">Planta</Label>
-                                <Select value={filterPlanta} onValueChange={setFilterPlanta}>
+                                <Select value={filterPlanta} onValueChange={v => v && setFilterPlanta(v)}>
                                     <SelectTrigger className="h-9"><SelectValue placeholder="Todas" /></SelectTrigger>
                                     <SelectContent><SelectItem value="all">Todas</SelectItem>{plantas.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
                                 </Select>
                             </div>
                             <div className="space-y-1">
                                 <Label className="text-xs text-slate-500 font-semibold">Realizado por</Label>
-                                <Select value={filterUser} onValueChange={setFilterUser}>
+                                <Select value={filterUser} onValueChange={v => v && setFilterUser(v)}>
                                     <SelectTrigger className="h-9"><SelectValue placeholder="Todos" /></SelectTrigger>
                                     <SelectContent><SelectItem value="all">Todos</SelectItem>{users.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}</SelectContent>
                                 </Select>
