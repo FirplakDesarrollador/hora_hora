@@ -1,65 +1,144 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { PlusCircle, BarChart2, FolderClock, RotateCw, BookOpen, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { createExternalClient } from "@/lib/supabase/external";
+import { logout } from "@/app/login/actions";
 
 export default function Home() {
+  const [userName, setUserName] = useState("");
+  const [initials, setInitials] = useState("");
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (data?.user) {
+        const email = data.user.email || "";
+        let name = "";
+
+        // Try main DB first
+        try {
+          const { data: u1 } = await supabase
+            .from('usuarios').select('nombre').eq('correo', email).single();
+          if (u1?.nombre) name = u1.nombre;
+        } catch { /* ignore */ }
+
+        // Fallback: external DB
+        if (!name) {
+          try {
+            const ext = createExternalClient();
+            const { data: u2 } = await ext
+              .from('usuarios').select('nombre').eq('correo', email).single();
+            if (u2?.nombre) name = u2.nombre;
+          } catch { /* ignore */ }
+        }
+
+        if (!name) name = email;
+
+        setUserName(name);
+        const parts = name.split(/[\s@]+/);
+        if (parts.length >= 2) {
+          setInitials((parts[0][0] + parts[1][0]).toUpperCase());
+        } else if (name.length >= 2) {
+          setInitials(name.substring(0, 2).toUpperCase());
+        }
+      }
+    });
+  }, []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-white flex flex-col relative font-sans">
+      {/* Header */}
+      <header className="w-full bg-primary text-primary-foreground h-20 px-6 flex items-center justify-between">
+        <div className="w-10"></div> {/* Spacer for centering */}
+        
+        <div className="flex flex-col items-center justify-center text-center">
+          <div className="font-bold text-2xl tracking-widest leading-none">FIRPLAK</div>
+          <div className="text-[10px] opacity-80 uppercase tracking-widest mt-1">inspiring homes</div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+        
+        {/* User avatar + logout */}
+        <div className="flex items-center gap-2">
+          <div className="hidden sm:flex flex-col items-end mr-1">
+            <span className="text-xs font-semibold leading-tight truncate max-w-[140px]">{userName}</span>
+          </div>
+          <div className="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center text-sm font-bold shrink-0">
+            {initials || "?"}
+          </div>
+          <form action={logout}>
+            <button
+              type="submit"
+              className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+              title="Cerrar sesión"
+            >
+              <LogOut size={16} />
+            </button>
+          </form>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col items-center justify-center p-6 pb-20">
+        
+        {/* Logo Section */}
+        <div className="flex flex-col items-center mb-16">
+          <div className="relative w-[200px] h-[200px] md:w-[250px] md:h-[250px]">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+              src="/LOGO_HORA-HORA.png"
+              alt="Hora-Hora Logo"
+              fill
+              className="object-contain"
+              style={{ mixBlendMode: 'multiply', filter: 'contrast(1.5) brightness(1.15)' }}
+              priority
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 max-w-5xl">
+          
+          <Link href="/historico" className="group">
+            <div className="w-36 h-36 md:w-48 md:h-48 bg-white rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.08)] border border-slate-100 flex flex-col items-center justify-center gap-4 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300">
+              <FolderClock className="w-10 h-10 text-primary opacity-80" strokeWidth={1.5} />
+              <span className="text-sm font-medium text-slate-600">Histórico</span>
+            </div>
+          </Link>
+
+          <Link href="/nueva-evaluacion" className="group">
+            <div className="w-36 h-36 md:w-48 md:h-48 bg-white rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.08)] border border-slate-100 flex flex-col items-center justify-center gap-4 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300">
+              <PlusCircle className="w-10 h-10 text-primary opacity-80" strokeWidth={1.5} />
+              <span className="text-sm font-medium text-slate-600">Nuevo</span>
+            </div>
+          </Link>
+
+          <Link href="/estadisticas" className="group">
+            <div className="w-36 h-36 md:w-48 md:h-48 bg-white rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.08)] border border-slate-100 flex flex-col items-center justify-center gap-4 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300">
+              <BarChart2 className="w-10 h-10 text-primary opacity-80" strokeWidth={1.5} />
+              <span className="text-sm font-medium text-slate-600">Estadísticas</span>
+            </div>
+          </Link>
+
+          <Link href="/guia" className="group">
+            <div className="w-36 h-36 md:w-48 md:h-48 bg-white rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.08)] border border-slate-100 flex flex-col items-center justify-center gap-4 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300">
+              <BookOpen className="w-10 h-10 text-primary opacity-80" strokeWidth={1.5} />
+              <span className="text-sm font-medium text-slate-600">Guía</span>
+            </div>
+          </Link>
+
         </div>
       </main>
+
+      {/* Refresh Button */}
+      <div className="absolute bottom-8 right-8">
+        <Button variant="ghost" size="icon" className="w-12 h-12 rounded-full hover:bg-slate-100" onClick={() => window.location.reload()}>
+          <RotateCw className="w-6 h-6 text-primary" />
+        </Button>
+      </div>
+
     </div>
   );
 }
