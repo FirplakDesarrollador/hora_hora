@@ -310,7 +310,7 @@ export default function Estadisticas() {
                                             <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                                             <XAxis dataKey="name" fontSize={11} />
                                             <YAxis domain={[0, 120]} fontSize={11} />
-                                            <Tooltip formatter={(v: number) => `${v.toFixed(1)}%`} />
+                                            <Tooltip formatter={(v: any) => `${Number(v).toFixed(1)}%`} />
                                             <Legend wrapperStyle={{ fontSize: 12 }} />
                                             <Line type="monotone" dataKey="rendimiento" name="Rendimiento %" stroke="#10b981" strokeWidth={2.5} dot={{ r: 3 }} />
                                             <Line type="monotone" dataKey="calidad" name="Calidad %" stroke="#3b82f6" strokeWidth={2.5} dot={{ r: 3 }} />
@@ -373,7 +373,7 @@ export default function Estadisticas() {
                                                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                                                 <XAxis dataKey="name" fontSize={12} />
                                                 <YAxis domain={[0, 120]} fontSize={11} />
-                                                <Tooltip formatter={(v: number) => `${v.toFixed(1)}%`} />
+                                                <Tooltip formatter={(v: any) => `${Number(v).toFixed(1)}%`} />
                                                 <Legend wrapperStyle={{ fontSize: 12 }} />
                                                 <Bar dataKey="rendimiento" name="Rend. %" fill="#10b981" radius={[4, 4, 0, 0]} />
                                                 <Bar dataKey="calidad" name="Calidad %" fill="#3b82f6" radius={[4, 4, 0, 0]} />
@@ -397,7 +397,7 @@ export default function Estadisticas() {
                                                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                                                 <XAxis dataKey="name" fontSize={10} angle={-20} textAnchor="end" height={50} />
                                                 <YAxis domain={[0, 100]} fontSize={11} />
-                                                <Tooltip formatter={(v: number) => `${v.toFixed(1)}%`} />
+                                                <Tooltip formatter={(v: any) => `${Number(v).toFixed(1)}%`} />
                                                 <Bar dataKey="calidad" name="Calidad %" fill="#f59e0b" radius={[4, 4, 0, 0]}>
                                                     {puestoData.map((d, i) => <Cell key={i} fill={d.calidad >= 90 ? '#10b981' : d.calidad >= 80 ? '#f59e0b' : '#94a3b8'} />)}
                                                 </Bar>
