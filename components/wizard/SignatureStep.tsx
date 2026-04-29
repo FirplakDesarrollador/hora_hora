@@ -66,8 +66,8 @@ function SignatureCanvas({ onSave }: { onSave: (dataUrl: string) => void }) {
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
-        const clientX = "clientX" in e ? e.clientX : e.clientX;
-        const clientY = "clientY" in e ? e.clientY : e.clientY;
+        const clientX = e.clientX;
+        const clientY = e.clientY;
         return {
             x: (clientX - rect.left) * scaleX,
             y: (clientY - rect.top) * scaleY,
